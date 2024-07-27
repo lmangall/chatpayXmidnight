@@ -9,6 +9,7 @@ import {UserProvider} from "./components/UserContext";
 import chatpayLogo from "/public/chatpay_logo.png";
 import midnightLogo from "/public/midnight_logo.png";
 import cardanoLogo from "/public/cardano_logo.png";
+import walletIcon from "/public/midnight_logo.png"; // Assume you have a wallet icon in public folder
 
 const isProduction =
   import.meta.env.VITE_IS_PRODUCTION === "true" ||
@@ -68,14 +69,29 @@ const AppContent: React.FC = () => {
     setCurrentTab(id);
   };
 
+  const handleConnectWallet = () => {
+    alert("Connect to Midnight Wallet");
+  };
+
   return (
     <div
       className='min-h-screen flex flex-col items-center'
       style={{backgroundColor: "#2da5e1"}}
     >
       <header className='w-full bg-blue-700 dark:bg-blue-800 text-white py-4'>
-        <div className='container mx-auto text-center flex items-center justify-center'>
-          <h1 className='text-2xl font-bold'>ChatPayXMidnight</h1>
+        <div className='container mx-auto text-center flex flex-col items-center justify-center'>
+          <h1 className='text-2xl font-bold mb-4'>ChatPayXMidnight</h1>
+          <button
+            onClick={handleConnectWallet}
+            className='bg-white text-blue-700 p-2 rounded-full flex items-center justify-center'
+            style={{width: "80px", height: "80px"}}
+          >
+            <img
+              src={walletIcon}
+              alt='Wallet Icon'
+              className='w-full h-full object-contain'
+            />
+          </button>
         </div>
       </header>
       <Tabbar
