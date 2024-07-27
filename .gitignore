@@ -11,7 +11,7 @@ lerna-debug.log*
 .env
 
 # Node modules directory
-node_modules
+node_modules/
 
 # Build directories
 dist
