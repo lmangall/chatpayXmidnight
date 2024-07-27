@@ -10,7 +10,6 @@ import {
 import {useUserContext} from "../utils/utils";
 import {loginHandler} from "../utils/api/loginHandler";
 import {UserContextProps} from "../types/types";
-import BackendError from "./BackendError";
 import {CustomError} from "../types/types";
 import PhoneNumberInput from "./PhoneNumberInput";
 
@@ -226,12 +225,9 @@ const Login: React.FC<LoginProps> = ({onLoginSuccess, backendUrl}) => {
       }}
     >
       {error && (
-        <BackendError
-          message={error.message}
-          errorCode={error.errorCode}
-          onClose={() => setError(null)}
-          onRedirect={() => setIsPhoneSubmitted(false)}
-        />
+        <p className='text-red-500'>
+          Error: {error.message} (Code: {error.errorCode})
+        </p>
       )}
 
       {!isPhoneSubmitted && user.auth_status !== "auth_code" ? (

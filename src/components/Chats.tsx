@@ -1,74 +1,43 @@
-import React, {useState, useEffect, useCallback} from "react";
-import ChatTable from "./ChatTable";
-import ChatTableInvitations from "./ChatTableInvitations";
-import ChatTableSummary from "./ChatTableSummary";
+import React, {useEffect, useCallback} from "react";
 import {useUserContext} from "../utils/utils";
-import {List, Chip} from "@telegram-apps/telegram-ui";
+import Login from "./Login";
 
 const Chats: React.FC<{backendUrl: string}> = ({backendUrl}) => {
   const {user, isLoggedIn} = useUserContext();
-  const [activeTab, setActiveTab] = useState<string>("");
+  // const [activeTab, setActiveTab] = useState<string>("");
 
   useEffect(() => {
     if (!user.has_profile) {
-      setActiveTab(user.chats.length > 0 ? "invitations" : "chats");
+      // setActiveTab(user.chats.length > 0 ? "invitations" : "chats");
+      console.log(
+        "User does not have a profile, setting active tab to invitations",
+      );
     } else {
       if (!isLoggedIn) {
-        setActiveTab("chats");
+        // setActiveTab("chats");
+        console.log(
+          "User has a profile, but is not logged in, setting active tab to chats",
+        );
       }
     }
   }, [user, isLoggedIn]);
 
-  const handleTabClick = useCallback((tab: string) => {
-    setActiveTab(tab);
+  const handleLoginSuccess = useCallback(() => {
+    console.log("Login successful, setting showChatTable to true");
+    // setShowChatTable(true);
   }, []);
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case "chats":
-        return <ChatTable backendUrl={backendUrl} />;
-      case "invitations":
-        return <ChatTableInvitations backendUrl={backendUrl} />;
-      case "summary":
-        return <ChatTableSummary />;
-      default:
-        return <ChatTable backendUrl={backendUrl} />;
-    }
-  };
+  return <Login onLoginSuccess={handleLoginSuccess} backendUrl={backendUrl} />;
+};
 
+// Other components or code that use the Chats component can be placed here
+const App: React.FC<{backendUrl: string}> = ({backendUrl}) => {
   return (
-    <>
-      <div className='overflow-x-auto mb-2'>
-        <List
-          className='inline-flex rounded-lg shadow space-x-4 px-2 pt-2'
-          style={{background: "var(--tgui--secondary_bg_color)"}}
-        >
-          <Chip
-            className='w-30 h-20'
-            mode={activeTab === "chats" ? "elevated" : "mono"}
-            onClick={() => handleTabClick("chats")}
-          >
-            My chats 💬
-          </Chip>
-          <Chip
-            className='w-30 h-20'
-            mode={activeTab === "invitations" ? "elevated" : "mono"}
-            onClick={() => handleTabClick("invitations")}
-          >
-            My invitations 📩
-          </Chip>
-          <Chip
-            className='w-30 h-20'
-            mode={activeTab === "summary" ? "elevated" : "mono"}
-            onClick={() => handleTabClick("summary")}
-          >
-            My summary 📝
-          </Chip>
-        </List>
-      </div>
-      <div className='w-full'>{renderContent()}</div>
-    </>
+    <div>
+      <Chats backendUrl={backendUrl} />
+      {/* Other components or elements can be included here */}
+    </div>
   );
 };
 
-export default Chats;
+export default App;

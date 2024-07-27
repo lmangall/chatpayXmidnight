@@ -1,11 +1,11 @@
 import React, {useState} from "react";
-import {Text, Input, Button} from "@telegram-apps/telegram-ui";
-import {useUserContext} from "../../utils/utils";
-import SuccessModalInitialQuest from "../Modals/SuccessModalInitialQuest";
+import {Text, Input, Button, Checkbox} from "@telegram-apps/telegram-ui";
+import {useUserContext} from "../utils/utils";
+import SuccessModal from "./Modals/SucessModal";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const Quest01: React.FC = () => {
+const QuestMidnightMetadata: React.FC = () => {
   const {user, updateUserBalance} = useUserContext();
   const [mothertongue, setMothertongue] = useState("");
   const [age, setAge] = useState("");
@@ -14,8 +14,22 @@ const Quest01: React.FC = () => {
   const [telegramSince, setTelegramSince] = useState("");
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
   const [isQuestSubmitted, setIsQuestSubmitted] = useState(false);
+  const [shieldedFields, setShieldedFields] = useState({
+    mothertongue: false,
+    age: false,
+    languagesSpoken: false,
+    cryptoSince: false,
+    telegramSince: false,
+  });
 
-  const questTitle = "Initial quest";
+  const questTitle = "Midnight Metadata";
+
+  const handleShieldedChange = (field: keyof typeof shieldedFields) => {
+    setShieldedFields(prevState => ({
+      ...prevState,
+      [field]: !prevState[field],
+    }));
+  };
 
   const handleSubmit = async () => {
     if (
@@ -37,6 +51,7 @@ const Quest01: React.FC = () => {
         languagesSpoken,
         cryptoSince,
         telegramSince,
+        shieldedFields,
       },
     });
 
@@ -56,6 +71,7 @@ const Quest01: React.FC = () => {
             languagesSpoken,
             cryptoSince,
             telegramSince,
+            shieldedFields,
           },
         }),
       });
@@ -106,6 +122,15 @@ const Quest01: React.FC = () => {
             placeholder='Enter your mothertongue'
             disabled={isQuestSubmitted}
           />
+          <div className='flex items-center'>
+            <label className='w-1/2'>Shielded?</label>
+            <Checkbox
+              checked={shieldedFields.mothertongue}
+              onChange={() => handleShieldedChange("mothertongue")}
+              className='ml-4'
+              disabled={isQuestSubmitted}
+            />
+          </div>
         </div>
         <div className='py-4'>
           <label className='mb-2'>Age:</label>
@@ -117,6 +142,15 @@ const Quest01: React.FC = () => {
             placeholder='Please enter your age'
             disabled={isQuestSubmitted}
           />
+          <div className='flex items-center'>
+            <label className='w-1/2'>Shielded?</label>
+            <Checkbox
+              checked={shieldedFields.age}
+              onChange={() => handleShieldedChange("age")}
+              className='ml-4'
+              disabled={isQuestSubmitted}
+            />
+          </div>
         </div>
         <div className='py-4'>
           <label className='mb-2'>Languages Spoken and proficiency:</label>
@@ -127,6 +161,15 @@ const Quest01: React.FC = () => {
             placeholder='Enter languages spoken and proficiency'
             disabled={isQuestSubmitted}
           />
+          <div className='flex items-center'>
+            <label className='w-1/2'>Shielded?</label>
+            <Checkbox
+              checked={shieldedFields.languagesSpoken}
+              onChange={() => handleShieldedChange("languagesSpoken")}
+              className='ml-4'
+              disabled={isQuestSubmitted}
+            />
+          </div>
         </div>
         <div className='py-4'>
           <label className='mb-2'>In crypto since:</label>
@@ -138,6 +181,15 @@ const Quest01: React.FC = () => {
             placeholder='Enter the year you started with crypto'
             disabled={isQuestSubmitted}
           />
+          <div className='flex items-center'>
+            <label className='w-1/2'>Shielded?</label>
+            <Checkbox
+              checked={shieldedFields.cryptoSince}
+              onChange={() => handleShieldedChange("cryptoSince")}
+              className='ml-4'
+              disabled={isQuestSubmitted}
+            />
+          </div>
         </div>
         <div className='py-4'>
           <label className='mb-2'>In Telegram since:</label>
@@ -150,6 +202,15 @@ const Quest01: React.FC = () => {
             max={new Date().getFullYear()}
             disabled={isQuestSubmitted}
           />
+          <div className='flex items-center'>
+            <label className='w-1/2'>Shielded?</label>
+            <Checkbox
+              checked={shieldedFields.telegramSince}
+              onChange={() => handleShieldedChange("telegramSince")}
+              className='ml-4'
+              disabled={isQuestSubmitted}
+            />
+          </div>
         </div>
       </div>
       <Button
@@ -161,7 +222,8 @@ const Quest01: React.FC = () => {
       </Button>
 
       {isSuccessModalVisible && (
-        <SuccessModalInitialQuest
+        <SuccessModal
+          isVisible={isSuccessModalVisible}
           onClose={() => setIsSuccessModalVisible(false)}
         />
       )}
@@ -169,4 +231,4 @@ const Quest01: React.FC = () => {
   );
 };
 
-export default Quest01;
+export default QuestMidnightMetadata;

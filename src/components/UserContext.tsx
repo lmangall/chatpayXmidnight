@@ -3,7 +3,6 @@
 import React, {createContext, useState, useEffect, ReactNode} from "react";
 import {getUserDataFromTelegram, getUserDataFromBackend} from "../utils/utils";
 import {User, CustomError, UserContextProps} from "../types/types";
-import BackendError from "../components/BackendError";
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
@@ -76,12 +75,10 @@ const UserProvider: React.FC<{children: ReactNode}> = ({children}) => {
     >
       {children}
       {error && (
-        <BackendError
-          message={error.message}
-          errorCode={error.status || 500}
-          onClose={() => setError(null)}
-          onRedirect={() => setCurrentTab("home")}
-        />
+        <div>
+          <h1>Error: {error.message}</h1>
+          <p>Code: {error.status}</p>
+        </div>
       )}
     </UserContext.Provider>
   );
