@@ -1,0 +1,68 @@
+include "std";
+
+// Enum to track the state of the metadata
+enum MetadataState { unset, set }
+
+// Ledger section to store the public state
+ledger {
+    owner: Cell[Bytes[32]]; // Public key of the owner
+    age: Cell[Maybe[Unsigned Integer[8]]];
+    gender: Cell[Maybe[Opaque["string"]]];
+    nationality: Cell[Maybe[Opaque["string"]]];
+    language: Cell[Maybe[Opaque["string"]]];
+    meta_tags: Cell[Maybe[Opaque["string"]]];
+    state: Cell[MetadataState]; // Current state
+    round: Counter; // Counter to ensure the public key changes with each round
+    constructor() {
+        ledger.state = MetadataState.unset;
+    }
+}
+
+// Witness function declaration to get the local secret key
+witness local_secret_key(): Bytes[32];
+
+// Circuit to store metadata
+export circuit store_metadata(
+    age: Unsigned Integer[8],
+    gender: Opaque["string"],
+    nationality: Opaque["string"],
+    language: Opaque["string"],
+    meta_tags: Opaque["string"]
+): Void {
+    assert ledger.state == MetadataState.unset
+        "Attempted to store metadata when state is not unset";
+    ledger.owner = public_key(ledger.round, local_secret_key());
+    ledger.age = some[Unsigned Integer[8]](age);
+    ledger.gender = some[Opaque["string"]](gender);
+    ledger.nationality = some[Opaque["string"]](nationality);
+    ledger.language = some[Opaque["string"]](language);
+    ledger.meta_tags = some[Opaque["string"]](meta_tags);
+    ledger.state = MetadataState.set;
+}
+
+// Circuit to update metadata
+export circuit update_metadata(
+    age: Unsigned Integer[8],
+    gender: Opaque["string"],
+    nationality: Opaque["string"],
+    language: Opaque["string"],
+    meta_tags: Opaque["string"]
+): Void {
+    assert ledger.state == MetadataState.set
+        "Attempted to update metadata when state is not set";
+    assert ledger.owner == public_key(ledger.round, local_secret_key())
+        "Unauthorized attempt to update metadata";
+    ledger.age = some[Unsigned Integer[8]](age);
+    ledger.gender = some[Opaque["string"]](gender);
+    ledger.nationality = some[Opaque["string"]](nationality);
+    ledger.language = some[Opaque["string"]](language);
+    ledger.meta_tags = some[Opaque["string"]](meta_tags);
+}
+
+// Circuit to generate the public key
+export circuit public_key(round: Field, sk: Bytes[32]): Bytes[32] {
+    return persistent_hash(
+        persistent_hash(pad(32, "metadata:pk:"), round as Bytes[32]),
+        sk
+    );
+}
