@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 import react from "@vitejs/plugin-react";
-import { configDefaults } from "vitest/config";
+import {configDefaults} from "vitest/config";
 
 export default defineConfig({
   plugins: [
